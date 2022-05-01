@@ -9,6 +9,7 @@ app  = FastAPI()
 
 origins = [
     #* specify domain of your web app here
+    *
     # "https://www.my_website_domain.com",
     "http://localhost",
     "http://localhost:8080",

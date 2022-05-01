@@ -15,7 +15,7 @@ router = APIRouter(prefix='/auth', tags=['auth'])
 
 
 #           VERIFY USERNAME             
-@router.get('/username_available', status_code=status.HTTP_200_OK)
+@router.post('/username_available', status_code=status.HTTP_200_OK)
 def check_username_availability(user: pydanticModels.CheckUsername, db:Session = Depends(get_db)):
     """
     description: Check if the username is available.                

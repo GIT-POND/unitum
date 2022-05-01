@@ -1,0 +1,36 @@
+version: '3.4'
+services:
+  api:
+    image: unitum
+    build: .
+    depends_on:
+      - postgres
+    ports:
+      # <local port>:<container port>
+      - 8000:8000
+    volumes:
+      - ./:/usr/src/app:ro
+    #env_file:
+      #./.env
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_PASSWORD=password123
+      - DATABASE_DB=TaskTracker
+      - DATABASE_USER=postgres
+      - SECRET_KEY = 89712f61b343e5cc606345ade54f8f11
+      - ALGORITHM = HS256
+
+  postgres_db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER:postgres1
+      - POSTGRES_PASSWORD=password123
+      - POSTGRES_DB=TaskTracker
+    ports:
+      - "5432:5432"
+    volumes:
+      - database-data:/var/lib/postgresql/data/
+
+volumes:
+  database-data:
