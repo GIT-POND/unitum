@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app  = FastAPI()
 
-alchemyModels.Base.metadata.create_all(bind=engine)
+alchemyModels.Base.metadata.create_all(bind=engine) # needed to initialize database
 
 origins = [
     #* specify domain of your web app here
