@@ -10,13 +10,13 @@ from App.auth import AuthHandler
 auth_handler = AuthHandler()
 
 
-#           ROUTER EXTENSION            
+#           ROUTER EXTENSION
 router = APIRouter(prefix='/auth', tags=['auth'])
 
 
-#           VERIFY USERNAME             
+#           VERIFY USERNAME
 @router.post('/username_available', status_code=status.HTTP_200_OK)
-def check_username_availability(user: pydanticModels.CheckUsername, db:Session = Depends(get_db)):
+def check_username_availability(user: pydanticModels.CheckUsername, db: Session = Depends(get_db)):
     """
     description: Check if the username is available.                
     @param user - the username to check for availability.           
@@ -24,20 +24,21 @@ def check_username_availability(user: pydanticModels.CheckUsername, db:Session =
     @returns true if the username is available, false otherwise.    
     """
     try:
-        search_result = db.query(alchemyModels.UserAcc).filter(alchemyModels.UserAcc.username == user.username).first()
+        search_result = db.query(alchemyModels.UserAcc).filter(
+            alchemyModels.UserAcc.username == user.username).first()
 
-        #NOTE: If available, return true. Otherwise, return false.
+        # NOTE: If available, return true. Otherwise, return false.
         if search_result is None:
-            return {'available':True}
+            return {'available': True}
         else:
-            return {'available':False}
+            return {'available': False}
     except:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
 
-#           ACCOUNT REGISTER            
-@router.post('/account_create', status_code=status.HTTP_201_CREATED, response_model=pydanticModels.UserAccResponse)
-def create_user_account(user:pydanticModels.CreateUserAcc, db:Session = Depends(get_db)):
+#           ACCOUNT REGISTER
+@router.post('/create_account', status_code=status.HTTP_201_CREATED, response_model=pydanticModels.UserAccResponse)
+def create_account(user: pydanticModels.CreateUserAcc, db: Session = Depends(get_db)):
     """
     description:   Create the user account in the database and return it.   
     @param user - the user account to create.                               
@@ -52,7 +53,7 @@ def create_user_account(user:pydanticModels.CreateUserAcc, db:Session = Depends(
 
         db.add(new_user_account)    # update db
         db.commit()     # save changes
-        db.refresh(new_user_account)    #reload db data
+        db.refresh(new_user_account)  # reload db data
 
         return new_user_account
     except BaseException as err:
@@ -60,9 +61,9 @@ def create_user_account(user:pydanticModels.CreateUserAcc, db:Session = Depends(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
 
-#           ACCOUNT LOGIN            
-@router.post('/account_login', status_code=status.HTTP_201_CREATED)
-def create_user_account(user:pydanticModels.LoginUserAcc, db:Session = Depends(get_db)):
+#           ACCOUNT LOGIN
+@router.post('/login_account', status_code=status.HTTP_201_CREATED)
+def login_account(user: pydanticModels.LoginUserAcc, db: Session = Depends(get_db)):
     """
     description:   Create the user account in the database and return it.   
     @param user - the user account to create.                               
@@ -70,16 +71,19 @@ def create_user_account(user:pydanticModels.LoginUserAcc, db:Session = Depends(g
     @returns the new user account.                                          
     """
     try:
-        db_user = db.query(alchemyModels.UserAcc).filter(alchemyModels.UserAcc.email == user.email).first()
+        db_user = db.query(alchemyModels.UserAcc).filter(
+            alchemyModels.UserAcc.email == user.email).first()
 
         if db_user is None:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='invalid user')
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail='invalid user')
 
         if auth_handler.verify_password(user.password, db_user.password):
             token = auth_handler.encode_token(db_user.id)
-            return {'token':token}
+            return {'token': token}
         else:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='invalid user')
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail='invalid user')
     except BaseException as err:
         print(err)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
