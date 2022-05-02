@@ -1,2 +1,2 @@
-# unitum-API
-task tracking software for productivity
+# unitum
+team task tacking software for productivity
