@@ -1,0 +1,27 @@
+version: '3.4'
+services:
+  api:
+    image: gitpond/unitum_api
+    depends_on:
+      - db
+    ports:
+      - 4000:8000   
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=${database_port}
+      - DATABASE_PASSWORD=${database_password}
+      - DATABASE_DB=${database_name}
+      - DATABASE_USER=${database_username}
+      - SECRET_KEY = ${secret_key}
+      - ALGORITHM = ${algorithm}
+
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=${database_password}
+      - POSTGRES_DB=${database_name}
+    volumes:
+      - dbData:/var/lib/postgresql/data
+
+volumes:
+  dbData:
