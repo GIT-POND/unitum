@@ -76,7 +76,6 @@ def create_user_account(user:pydanticModels.LoginUserAcc, db:Session = Depends(g
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='invalid user')
 
         if auth_handler.verify_password(user.password, db_user.password):
-
             token = auth_handler.encode_token(db_user.id)
             return {'token':token}
         else:
