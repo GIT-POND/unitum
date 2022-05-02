@@ -1,11 +1,15 @@
 from fastapi import FastAPI
 # from .database import engine
 from App.routers import userAcc,taskList,task,userAuth
+from .database import engine
+from. import alchemyModels
 
 # Cross Origin Resource Sharing
 from fastapi.middleware.cors import CORSMiddleware
 
 app  = FastAPI()
+
+alchemyModels.Base.metadata.create_all(bind=engine)
 
 origins = [
     #* specify domain of your web app here
